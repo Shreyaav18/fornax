@@ -4,6 +4,7 @@ import torch.nn as nn
 from typing import Optional, Dict, Tuple
 from model.attention import MultiHeadSelfAttention
 from model.feedforward import SwiGLUFeedForward
+from model.normalization import RMSNorm
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
@@ -32,8 +33,8 @@ class TransformerBlock(nn.Module):
 
         self.layer_idx = layer_idx
 
-        self.norm_1 = nn.LayerNorm(d_model)
-        self.norm_2 = nn.LayerNorm(d_model)
+        self.norm_1 = RMSNorm(d_model)
+        self.norm_2 = RMSNorm(d_model)
 
         try:
             self.attention = MultiHeadSelfAttention(
@@ -70,16 +71,16 @@ class TransformerBlock(nn.Module):
         if x.dim() != 3:
             raise ValueError(f"Block {self.layer_idx}: expected input shape [batch, seq_len, d_model], got {x.shape}")
 
-        if x.shape[-1] != self.norm_1.normalized_shape[0]:
+        if x.shape[-1] != self.norm_1.d_model:
             raise ValueError(
                 f"Block {self.layer_idx}: input last dim {x.shape[-1]} "
-                f"does not match d_model {self.norm_1.normalized_shape[0]}"
+                f"does not match d_model {self.norm_1.d_model}"
             )
 
         try:
             normed = self.norm_1(x)
         except Exception as e:
-            logger.error(f"Block {self.layer_idx}: pre-attention LayerNorm failed: {e}")
+            logger.error(f"Block {self.layer_idx}: pre-attention RMSNorm failed: {e}")
             raise
 
         try:
@@ -97,7 +98,7 @@ class TransformerBlock(nn.Module):
         try:
             normed = self.norm_2(x)
         except Exception as e:
-            logger.error(f"Block {self.layer_idx}: pre-FFN LayerNorm failed: {e}")
+            logger.error(f"Block {self.layer_idx}: pre-FFN RMSNorm failed: {e}")
             raise
 
         try:

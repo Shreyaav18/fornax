@@ -5,6 +5,7 @@ from typing import Optional, List, Dict, Tuple
 from config.model_config import ModelConfig
 from model.embeddings import TokenEmbedding
 from model.block import TransformerBlock
+from model.normalization import RMSNorm
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
@@ -42,9 +43,9 @@ class GPT(nn.Module):
             raise
 
         try:
-            self.final_norm = nn.LayerNorm(config.d_model)
+            self.final_norm = RMSNorm(config.d_model)
         except Exception as e:
-            logger.error(f"Failed to initialize final LayerNorm: {e}")
+            logger.error(f"Failed to initialize final RMSNorm: {e}")
             raise
 
         try:
@@ -70,9 +71,8 @@ class GPT(nn.Module):
                     nn.init.normal_(module.weight, mean=0.0, std=0.02)
                     if module.bias is not None:
                         nn.init.zeros_(module.bias)
-                elif isinstance(module, nn.LayerNorm):
-                    nn.init.ones_(module.weight)
-                    nn.init.zeros_(module.bias)
+                elif isinstance(module, RMSNorm):
+                    nn.init.ones_(module.scale)
             logger.info("GPT weights initialized")
 
         except Exception as e:
@@ -131,7 +131,7 @@ class GPT(nn.Module):
         try:
             x = self.final_norm(x)
         except Exception as e:
-            logger.error(f"Final LayerNorm failed: {e}")
+            logger.error(f"Final RMSNorm failed: {e}")
             raise
 
         try:
