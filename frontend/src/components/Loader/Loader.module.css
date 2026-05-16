@@ -1,0 +1,56 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+}
+
+.wrapper[data-size='sm'] .orbital {
+  width: 2rem;
+  height: 2rem;
+}
+
+.wrapper[data-size='md'] .orbital {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.wrapper[data-size='lg'] .orbital {
+  width: 5rem;
+  height: 5rem;
+}
+
+.orbital {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--gradient-aurora);
+  will-change: transform, opacity;
+}
+
+.core {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--gradient-aurora);
+  box-shadow: var(--shadow-glow-sm);
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  will-change: opacity;
+}

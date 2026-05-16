@@ -1,0 +1,80 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  backdrop-filter: var(--blur-sm);
+  -webkit-backdrop-filter: var(--blur-sm);
+}
+
+.badge[data-status='completed'] {
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.1),
+    rgba(16, 185, 129, 0.05)
+  );
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.badge[data-status='running'] {
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.1),
+    rgba(245, 158, 11, 0.05)
+  );
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.badge[data-status='failed'] {
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.1),
+    rgba(239, 68, 68, 0.05)
+  );
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.badge[data-status='pending'] {
+  background: linear-gradient(
+    135deg,
+    rgba(107, 114, 128, 0.1),
+    rgba(107, 114, 128, 0.05)
+  );
+  border-color: rgba(107, 114, 128, 0.3);
+}
+
+.dot {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.dot[data-status='completed'] { background: var(--color-status-completed); }
+.dot[data-status='running'] { background: var(--color-status-running); }
+.dot[data-status='failed'] { background: var(--color-status-failed); }
+.dot[data-status='pending'] { background: var(--color-status-pending); }
+
+.pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-full);
+  background: inherit;
+  will-change: transform, opacity;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.badge[data-status='completed'] .label { color: var(--color-status-completed); }
+.badge[data-status='running'] .label { color: var(--color-status-running); }
+.badge[data-status='failed'] .label { color: var(--color-status-failed); }
+.badge[data-status='pending'] .label { color: var(--color-status-pending); }
